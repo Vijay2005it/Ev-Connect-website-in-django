@@ -1,0 +1,107 @@
+{% extends "Vehicle/base.html" %}
+{% block content %}
+
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #f3f8f4;
+  }
+
+  .booking-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    margin-top: 100px;
+  }
+
+  .booking-header {
+    text-align: center;
+    color: #16a34a;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+
+  .bunker-info {
+    background: #ecfdf5;
+    border-left: 5px solid #16a34a;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+
+  .btn-book {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-book:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    transform: translateY(-2px);
+  }
+
+  label {
+    font-weight: 500;
+    color: #047857;
+  }
+</style>
+
+<div class="container">
+  <div class="card booking-card mx-auto" style="max-width: 650px;">
+    <h2 class="booking-header"><i class="fas fa-battery-full me-2"></i>Book Your EV Slot</h2>
+
+    <!-- Bunker Info -->
+    <div class="bunker-info">
+      <h5 class="text-success fw-bold">{{ bunker.bunker_name }}</h5>
+      <p class="mb-0">
+        📍 <strong>Location:</strong> {{ bunker.location }}<br>
+        ⚡ <strong>Available Slots:</strong> {{ bunker.slots }}<br>
+        💰 <strong>Rate:</strong> ₹{{ bunker.rate }}/hour
+      </p>
+    </div>
+
+    <!-- Booking Form -->
+
+<div class="container py-5">
+  <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+    <h3 class="text-center text-success mb-4">Book Slot for {{ bunker.bunker_name }}</h3>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Vehicle Number</label>
+        <input type="text" name="vehicle_number" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Mobile Number</label>
+        <input type="text" name="mobile_number" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Booking Date</label>
+        <input type="date" name="booking_date" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Time Slot (in hours)</label>
+        <input type="number" name="time_slot" class="form-control" required min="1">
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-success">Confirm Booking</button>
+        <a href="{% url 'Vehicle:index' %}" class="btn btn-secondary ms-2">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

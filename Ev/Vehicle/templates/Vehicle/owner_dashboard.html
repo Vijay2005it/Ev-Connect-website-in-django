@@ -1,0 +1,346 @@
+{% extends "Vehicle/base.html" %}
+{% block content %}
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #f3f8f4;
+    min-height: 100vh;
+  }
+
+  .dashboard-header {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 100px;
+    margin-bottom: 30px;
+  }
+
+  .dashboard-header h2 {
+    color: #0d9488;
+    font-weight: 700;
+  }
+
+  .btn-add {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-add:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    transform: translateY(-2px);
+  }
+
+  .bunker-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .bunker-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .bunker-card img {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .card-body h5 {
+    color: #047857;
+    font-weight: 600;
+  }
+
+  .btn-outline-primary {
+    border-color: #16a34a;
+    color: #16a34a;
+  }
+
+  .btn-outline-primary:hover {
+    background: #16a34a;
+    color: #fff;
+  }
+
+  .btn-outline-danger {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+
+  .btn-outline-danger:hover {
+    background: #ef4444;
+    color: white;
+  }
+</style>
+
+<!-- Dashboard Header -->
+<div class="container">
+  <div class="dashboard-header d-flex justify-content-between align-items-center">
+    <h2><i class="fas fa-leaf me-2"></i>My EV Bunkers</h2>
+    <a href="{% url 'Vehicle:add_bunker' %}" class="btn btn-add">
+      <i class="fas fa-plus-circle me-1"></i> Add New Bunker
+    </a>
+  </div>
+
+  <!-- Bunkers List -->
+  <div class="row">
+    {% if bunkers %}
+      {% for bunker in bunkers %}
+        <div class="col-md-4 mb-4">
+          <div class="card bunker-card">
+            {% if bunker.image %}
+              <img src="{{ bunker.image.url }}" class="card-img-top" alt="{{ bunker.name }}">
+            {% else %}
+              <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="No Image">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ bunker.name }}</h5>
+              <p class="card-text">
+                📍 {{ bunker.location }}<br>
+                ⚡ Available Slots: {{ bunker.slots }}<br>
+                💰 Rate per hour: ₹{{ bunker.rate }}<br>
+                📃 Description: {{ bunker.description |truncatechars:10}}
+              </p>
+              <div class="d-flex justify-content-between">
+                <a href="{% url 'Vehicle:edit_bunker' bunker.id %}" class="btn btn-sm btn-outline-primary">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'Vehicle:delete_bunker' bunker.id %}" class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-trash"></i> Delete
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-muted mt-5">No bunkers added yet. Click "Add New Bunker" to get started.</p>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  body {
+    background-color: #f3f8f4;
+    font-family: "Poppins", sans-serif;
+  }
+  .table-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 100px;
+  }
+  table {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  thead {
+    background-color: #0d9488;
+    color: white;
+  }
+  tbody tr:hover {
+    background-color: #dcfce7;
+    transition: 0.2s;
+  }
+  .status-booked {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  .status-available {
+    background-color: #dcfce7;
+    color: #065f46;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  .btn-done {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+  .btn-done:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    transform: translateY(-2px);
+  }
+</style>
+
+<div class="container">
+<hr class="my-5">
+
+<h3 class="text-center text-success mb-4">⚡ Slot Booking Details</h3>
+
+<div class="table-responsive">
+  <table class="table table-bordered align-middle text-center">
+    <thead class="table-success">
+      <tr>
+        <th>#</th>
+        <th>Booked By</th>
+        <th>Mobile</th>
+        <th>Bunker</th>
+        <th>Location</th>
+        <th>Rate (₹/hr)</th>
+        <th>Booking Date</th>
+        <th>Time Slot</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for booking in bookings %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ booking.user.username }}</td>
+        <td>{{ booking.mobile_number }}</td>
+        <td>{{ booking.bunker.bunker_name }}</td>
+        <td>{{ booking.bunker.location }}</td>
+        <td>{{ booking.bunker.rate }}</td>
+        <td>{{ booking.booking_date }}</td>
+        <td>{{ booking.time_slot }} hrs</td>
+        <td>
+          {% if booking.status == 'done' %}
+            <span class="badge bg-success">✅ Done</span>
+          {% elif booking.status == 'confirmed' %}
+            <span class="badge bg-primary">Confirmed</span>
+          {% elif booking.status == 'cancelled' %}
+            <span class="badge bg-danger">Cancelled</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">Pending</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if booking.status == 'pending' %}
+            <form method="POST" action="{% url 'Vehicle:mark_done' booking.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success btn-sm">✅ Done</button>
+            </form>
+          {% else %}
+            <button class="btn btn-secondary btn-sm" disabled>Done</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="10" class="text-muted">No bookings available yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+
+<style>
+  body {
+    background-color: #f8fdf8;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .mechanic-section {
+    max-width: 1000px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 128, 0, 0.1);
+    padding: 30px 40px;
+  }
+
+  .table th {
+    background-color: #198754 !important;
+    color: #fff;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f0fdf4;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #198754, #157347);
+    border: none;
+  }
+
+  .btn-success:hover {
+    box-shadow: 0 4px 10px rgba(25, 135, 84, 0.4);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    border: none;
+  }
+
+  .btn-danger:hover {
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
+  }
+</style>
+<div class="container">
+  <hr class="my-5">
+  <div class="mechanic-section">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="text-success fw-bold mb-0">🛠️ Mechanic Details</h3>
+      <a href="{% url 'Vehicle:add_mechanic' %}" class="btn btn-success shadow-sm">
+        <i class="fa-solid fa-address-card me-2"></i> Add Mechanic
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Experience</th>
+            <th>Specialization</th>
+            <th>Conatct</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for mechanic in mechanics %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ mechanic.name }}</td>
+            <td>{{ mechanic.phone }}</td>
+            <td>{{ mechanic.experience }}</td>
+            <td>{{ mechanic.specialization }}</td>
+            <td><a href="tel:{{ mechanic.phone}}" class="btn btn-outline-success w-30 mt-2">
+                    <i class="fas fa-phone-alt me-1"></i> Contact {{mechanic.name}}
+                  </a></td>
+            <td>
+              <a href="{% url 'Vehicle:delete_mechanic' mechanic.id %}" 
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure you want to delete this mechanic?');">
+                <i class="fas fa-trash-alt"></i> Delete
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-muted">No Mechanics Available yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+</div>
+{% endblock %}

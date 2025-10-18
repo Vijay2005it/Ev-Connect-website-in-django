@@ -1,0 +1,150 @@
+{% extends "Vehicle/base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background: #f8fdf8;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .about-section {
+    max-width: 1000px;
+    margin: 60px auto;
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 128, 0, 0.15);
+    animation: fadeIn 0.8s ease-in-out;
+  }
+
+  .about-title {
+    color: #198754;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .about-subtitle {
+    text-align: center;
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 40px;
+  }
+
+  .about-content p {
+    color: #495057;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+
+  .highlight {
+    color: #157347;
+    font-weight: 600;
+  }
+
+  .mission-section {
+    margin-top: 40px;
+    background: #e9f8ec;
+    border-left: 5px solid #198754;
+    padding: 20px 25px;
+    border-radius: 10px;
+  }
+
+  .mission-section h4 {
+    color: #198754;
+    font-weight: 700;
+  }
+
+  .team-section {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  .team-section h4 {
+    color: #198754;
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+
+  .team-member {
+    display: inline-block;
+    width: 200px;
+    margin: 15px;
+    background: #f8fff9;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.1);
+    transition: 0.3s;
+  }
+
+  .team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(25, 135, 84, 0.2);
+  }
+
+  .team-member img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+  }
+
+  .team-member h6 {
+    color: #157347;
+    font-weight: 600;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="about-section ">
+  <h2 class="about-title"><i class="fas fa-leaf"></i> About Us</h2>
+  <p class="about-subtitle">Driving sustainability through innovation and service 🌱</p>
+
+  <div class="about-content">
+    <p>
+      Welcome to <span class="highlight">EV Service Hub</span> — your trusted partner in electric vehicle 
+      care and maintenance. Our mission is to simplify the EV ownership experience by connecting 
+      users, service providers, and mechanics all under one digital roof.
+    </p>
+    <p>
+      From <span class="highlight">charging stations</span> to <span class="highlight">mechanic booking</span> and 
+      <span class="highlight">bunker management</span>, our platform ensures that everything runs efficiently, 
+      conveniently, and sustainably.
+    </p>
+  </div>
+
+  <div class="mission-section">
+    <h4><i class="fas fa-bullseye me-2"></i>Our Mission</h4>
+    <p>
+      To accelerate the adoption of eco-friendly transportation by creating a smart digital 
+      ecosystem for EV users and service providers. We aim to make electric mobility 
+      simple, accessible, and sustainable for everyone.
+    </p>
+  </div>
+
+  <div class="team-section">
+    <h4><i class="fas fa-users me-2"></i>Meet Our Team</h4>
+    <div class="team-member">
+      <img src="https://cdn-icons-png.flaticon.com/512/147/147144.png" alt="Team">
+      <h6>Vijay</h6>
+      <p class="text-muted small">Founder & Developer</p>
+    </div>
+    <div class="team-member">
+      <img src="https://cdn-icons-png.flaticon.com/512/147/147142.png" alt="Team">
+      <h6>Akash</h6>
+      <p class="text-muted small">UI/UX Designer</p>
+    </div>
+    <div class="team-member">
+      <img src="https://cdn-icons-png.flaticon.com/512/147/147140.png" alt="Team">
+      <h6>Kumar</h6>
+      <p class="text-muted small">Backend Engineer</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

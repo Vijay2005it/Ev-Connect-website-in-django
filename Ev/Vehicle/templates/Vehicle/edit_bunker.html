@@ -1,0 +1,105 @@
+{% extends "Vehicle/base.html" %}
+{% block content %}
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #f3f8f4;
+    min-height: 100vh;
+  }
+
+  .edit-container {
+    max-width: 650px;
+    margin: 120px auto;
+    background: white;
+    padding: 35px 45px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .edit-container h2 {
+    color: #047857;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  form label {
+    font-weight: 500;
+    color: #064e3b;
+  }
+
+  form input,
+  form textarea,
+  form select {
+    border: 1px solid #d1fae5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    width: 100%;
+    margin-bottom: 18px;
+    transition: all 0.3s ease;
+  }
+
+  form input:focus,
+  form textarea:focus,
+  form select:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    outline: none;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 25px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 25px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #d1d5db;
+    transform: translateY(-2px);
+  }
+
+  .img-preview {
+    display: block;
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #d1fae5;
+  }
+</style>
+
+<div class="edit-container">
+  <h2><i class="fas fa-edit me-2"></i>Edit Bunker</h2>
+
+  {% if bunker.image %}
+    <img src="{{ bunker.image.url }}" alt="{{ bunker.name }}" class="img-preview">
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-center mt-3">
+      <button type="submit" class="btn btn-success">💾 Save Changes</button>
+      <a href="{% url 'Vehicle:owner_dashboard' %}" class="btn btn-secondary ms-2">↩ Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

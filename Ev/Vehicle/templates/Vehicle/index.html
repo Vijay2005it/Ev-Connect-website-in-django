@@ -1,0 +1,275 @@
+{% extends "Vehicle/base.html" %}
+{% block content %}
+{% load static %}
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #f3f8f4;
+  }
+
+  .hero-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+  }
+  .hero-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .hero-subtitle {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    color: #e2f7e1;
+  }
+  .btn-hero {
+    margin-top: 25px;
+    background: white;
+    color: #15803d;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 25px;
+    transition: 0.3s;
+  }
+  .btn-hero:hover {
+    background: #f0fdf4;
+    color: #166534;
+    transform: translateY(-2px);
+  }
+
+  .feature-card,
+  .user-type-card,
+  .bunker-card,
+  .mechanic-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    transition: 0.3s;
+  }
+  .feature-card:hover,
+  .user-type-card:hover,
+  .bunker-card:hover,
+  .mechanic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .stats-section {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 60px 0;
+  }
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+</style>
+
+<!-- 🌍 Hero Section -->
+<section class="hero-section" id="home">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="hero-title">
+          Drive the Future with <span class="text-warning">EV Connect ⚡</span>
+        </h1>
+        <p class="hero-subtitle">
+          Join India’s smart EV ecosystem — connect battery owners, mechanics, and users under one powerful platform. Experience seamless energy sharing and sustainable travel.
+        </p>
+        <a href="#features" class="btn btn-hero">
+          <i class="fas fa-play-circle me-2"></i> Explore Platform
+        </a>
+      </div>
+      <div class="col-lg-6 text-center">
+        <img src="{% static 'vehicle\img\nissan-charging.png' %}" alt="EV Charging" class="img-fluid rounded" style="max-height: 320px;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🔍 Search -->
+<section class="bg-success py-4 text-white text-center shadow-sm">
+  <div class="container">
+    <h2 class="mb-3 fw-bold">Find EV Battery Bunkers Near You ⚡</h2>
+    <form method="GET" action="{% url 'Vehicle:index' %}" class="d-flex justify-content-center">
+      <input type="text" name="q" class="form-control w-50 me-2" placeholder="Search by name, city or owner..." value="">
+      <button type="submit" class="btn btn-light fw-bold">
+        <i class="fas fa-search me-1"></i> Search
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- 💡 Features -->
+<section class="py-5" id="features">
+  <div class="container">
+    <h2 class="text-center section-title mb-5">Why EV Connect Stands Out</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card p-4 text-center">
+          <i class="fas fa-battery-full fa-2x text-success mb-3"></i>
+          <h4>Battery Sharing Made Easy</h4>
+          <p>Rent or share batteries instantly with trusted owners near you. Save time, money, and energy.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card p-4 text-center">
+          <i class="fas fa-wrench fa-2x text-success mb-3"></i>
+          <h4>Verified EV Mechanics</h4>
+          <p>Access experienced technicians who specialize in electric vehicles, anytime and anywhere.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card p-4 text-center">
+          <i class="fas fa-leaf fa-2x text-success mb-3"></i>
+          <h4>Eco-Friendly Network</h4>
+          <p>Contribute to a sustainable future — every battery shared means fewer emissions for our planet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🔋 Bunkers -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center section-title mb-5">Available EV Battery Bunkers</h2>
+    <div class="row">
+      {% if bunkers %}
+        {% for bunker in bunkers %}
+          <div class="col-md-4 mb-4">
+            <div class="card bunker-card">
+              {% if bunker.image %}
+                {% comment %} <img src="{{ bunker.image.url }}" class="card-img-top object-fit-cover rounded-3 shadow-sm" alt="{{ bunker.bunker_name }}" style="height: 220px; width: 100%; object-fit: cover;"> {% endcomment %}
+                <div class="position-relative overflow-hidden rounded-4 shadow-lg" style="height: 240px;">
+                  <img src="{{ bunker.image.url }}" 
+                      alt="{{ bunker.bunker_name }}" 
+                      class="w-100 h-100 object-fit-cover" 
+                      style="transition: transform 0.3s ease;">
+                </div>
+
+              {% else %}
+                <img src="{% static 'images/no-image.webp' %}" class="card-img-top" alt="No Image">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ bunker.bunker_name }}</h5>
+                <p>
+                  📍 {{ bunker.location }}<br>
+                  ⚡ Slots: {{ bunker.slots }}<br>
+                  💰 Rate: ₹{{ bunker.rate }}/hr<br>
+                  👤 Owner: {{ bunker.owner.username }}
+                </p>
+                <a href="{% url 'Vehicle:slot_book' bunker.id %}" class="btn btn-success w-100">
+                  <i class="fas fa-battery-half me-2"></i>Book Slot
+                </a>
+                 <a href="tel:{{ bunker.owner.phone}}" class="btn btn-outline-success w-100 mt-3">
+                        <i class="fas fa-phone-alt me-1"></i> Contact Bunk Owner {{bunker.owner.username}}
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-center text-muted mt-5">No EV Bunkers available yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- 🧰 Mechanics -->
+<section class="container py-5">
+  <h2 class="text-center text-success mb-4">
+    <i class="fas fa-tools"></i> Our Trusted Mechanics
+  </h2>
+  <p class="text-center text-muted mb-5">
+    Skilled experts ready to serve your EV vehicles with care and precision.
+  </p>
+  <div class="row g-4">
+    {% for mechanic in mechanics %}
+      <div class="col-md-4">
+        <div class="card mechanic-card p-4 text-center h-100">
+          <i class="fas fa-user-cog fa-3x text-success mb-3"></i>
+          <h5 class="fw-bold">{{ mechanic.name }}</h5>
+          <p>🔧 {{ mechanic.specialization }}</p>
+          <p>🧭 Experience: {{ mechanic.experience }} years</p>
+          <p>📞 {{ mechanic.phone }}</p>
+            <a href="tel:{{ mechanic.phone}}" class="btn btn-outline-success w-60 mt-2">
+            <i class="fas fa-phone-alt me-1"></i> Contact Mechanic {{mechanic.name}}
+          </a>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-muted">No mechanics available yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- 👥 User Types -->
+<section class="py-5 bg-light" id="users">
+  <div class="container">
+    <h2 class="text-center section-title mb-5">Join the EV Community</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-3 col-sm-6">
+        <div class="user-type-card p-4">
+          <i class="fas fa-user-shield fa-2x text-success mb-3"></i>
+          <h5>Admin</h5>
+          <p>Control operations and manage the EV ecosystem.</p>
+          <a href="{% url 'Vehicle:login_page' %}" class="btn btn-outline-success">Admin Login</a>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="user-type-card p-4">
+          <i class="fas fa-user fa-2x text-success mb-3"></i>
+          <h5>EV User</h5>
+          <p>Find batteries, rent slots, and travel seamlessly.</p>
+          <a href="{% url 'Vehicle:login_page' %}" class="btn btn-success">User Login</a>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="user-type-card p-4">
+          <i class="fas fa-user-tie fa-2x text-success mb-3"></i>
+          <h5>Battery Owner</h5>
+          <p>List bunkers, rent batteries, and earn smart.</p>
+          <a href="{% url 'Vehicle:login_page' %}" class="btn btn-success">Owner Login</a>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="user-type-card p-4">
+          <i class="fas fa-tools fa-2x text-success mb-3"></i>
+          <h5>Mechanic</h5>
+          <p>Offer EV repair and maintenance services to users.</p>
+          <a href="{% url 'Vehicle:login_page' %}" class="btn btn-success">Mechanic Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 📊 Stats -->
+<section class="stats-section text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-6 mb-4">
+        <div class="stat-number">750+</div>
+        <p>Active Users</p>
+      </div>
+      <div class="col-md-3 col-6 mb-4">
+        <div class="stat-number">1,500+</div>
+        <p>Batteries Listed</p>
+      </div>
+      <div class="col-md-3 col-6 mb-4">
+        <div class="stat-number">80+</div>
+        <p>Cities Covered</p>
+      </div>
+      <div class="col-md-3 col-6 mb-4">
+        <div class="stat-number">99%</div>
+        <p>Positive Feedback</p>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .card img:hover {
+    transform: scale(1.05);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,172 @@
+
+{% extends "vehicle/base.html" %}
+{% block content %}
+{% load static %}
+<!-- Header Section -->
+<section class="py-5 text-center bg-success text-white mt-5">
+  <div class="container">
+    <h1 class="fw-bold mb-3">⚙️ EV Mechanic & Service Center</h1>
+    <p class="lead">Get professional maintenance and repair services for your electric vehicle — anywhere, anytime.</p>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="{% static 'vehicle\img\hero-service-repair.webp' %}" alt="EV Service" class="img-fluid rounded shadow">
+      </div>
+      <div class="col-md-6">
+        <h3 class="text-success fw-bold mb-3">About Our Service</h3>
+        <p class="text-muted">
+          We offer full electric vehicle maintenance — from battery checks to motor repairs.
+          Our expert mechanics ensure your EV stays efficient, reliable, and eco-friendly.
+        </p>
+        <ul class="list-unstyled mt-3">
+          <li><i class="fa-solid fa-bolt text-success me-2"></i> Battery Health Check & Replacement</li>
+          <li><i class="fa-solid fa-car-battery text-success me-2"></i> Charging System Diagnosis</li>
+          <li><i class="fa-solid fa-wrench text-success me-2"></i> Motor & Brake Maintenance</li>
+          <li><i class="fa-solid fa-road text-success me-2"></i> On-site Emergency Repair</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="container py-5 mt-5">
+
+  <div class="text-center mb-5">
+    {% if request.user.user_type == "user" %}
+      <h2 class="fw-bold text-success"><i class="fas fa-tools me-2"></i>Available Mechanics</h2>
+      <p class="text-muted">Find trusted mechanics ready to service your EV ⚡</p>
+
+    {% elif request.user.user_type == "mechanic" %}
+      <h2 class="fw-bold text-primary"><i class="fas fa-users me-2"></i>Registered EV Users</h2>
+      <p class="text-muted">View users who are part of our EV Battery Sharing Network</p>
+
+    {% elif request.user.user_type == "owner" or request.user.is_superuser %}
+      <h2 class="fw-bold text-danger"><i class="fas fa-database me-2"></i>All Registered Data</h2>
+      <p class="text-muted">Complete overview of users and mechanics</p>
+    {% endif %}
+  </div>
+
+  <div class="row">
+    {% if request.user.user_type == "user" %}
+      {% for mechanic in mechanics %}
+        <div class="col-md-4 mb-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title text-success">{{ mechanic.name }}</h5>
+              <p><i class="fas fa-cog"></i> {{ mechanic.specialization }}</p>
+              <p><i class="fas fa-briefcase"></i> {{ mechanic.experience }} yrs experience</p>
+              <p><i class="fas fa-phone"></i> {{ mechanic.phone }}</p>
+              <a href="tel:{{ mechanic.phone }}" class="btn btn-outline-success w-100 mt-2">
+            <i class="fas fa-phone-alt me-1"></i> Contact Owner
+          </a>            
+        </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-muted">No mechanics available currently.</p>
+      {% endfor %}
+  <div class="row">
+   {% if request.user.user_type == "user" %}
+  <div class="col-12 text-center mb-4">
+    <h2 class="fw-bold text-success"><i class="fas fa-charging-station me-2"></i>Available Battery Bunk Stations</h2>
+    <p class="text-muted">Find EV battery bunk owners near you ⚡</p>
+  </div>
+
+  {% for bunker in bunkers %}
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-success">
+            <i class="fas fa-battery-full me-2"></i>{{ bunker.bunker_name }}
+          </h5>
+          <p><i class="fas fa-map-marker-alt me-2 text-danger"></i> {{ bunker.location }}</p>
+          <p><i class="fas fa-box me-2 text-primary"></i>Slots: {{ bunker.slots }}</p>
+          <p><i class="fas fa-rupee-sign me-2 text-warning"></i>Rate: ₹{{ bunker.rate }}</p>
+
+          {% if bunker.owner %}
+            <hr>
+            <p class="fw-bold mb-1 text-secondary"><i class="fas fa-user-tie me-2"></i>{{ bunker.owner.username }}</p>
+            <p><i class="fas fa-phone me-2"></i>{{ bunker.owner.phone }}</p>
+          {% else %}
+            <p class="text-muted fst-italic">Owner info not available</p>
+          {% endif %}
+              <a href="tel:{{ bunker.owner.phone }}" class="btn btn-outline-success w-100 mt-2">
+            <i class="fas fa-phone-alt me-1"></i> Contact Owner
+          </a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-center text-muted">No Battery Bunk Owners available currently.</p>
+  {% endfor %}
+{% endif %}
+
+
+    {% elif request.user.user_type == "mechanic" %}
+      {% for user in users %}
+        <div class="col-md-4 mb-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title text-primary">{{ user.first_name }} {{ user.last_name }}</h5>
+              <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+              <p><i class="fas fa-phone"></i> {{ user.phone }}</p>
+              <p><i class="fas fa-map-marker-alt"></i> {{ user.address }}</p>
+                  <a href="tel:{{ user.phone }}" class="btn btn-outline-success w-100 mt-2">
+                  <i class="fas fa-phone-alt me-1"></i> Contact {{user.first_name}}
+                </a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-muted">No users found.</p>
+      {% endfor %}
+
+    {% elif request.user.user_type == "owner" or 'admin' %}
+      <div class="col-12">
+        <h4 class="fw-bold text-success mb-3"><i class="fas fa-tools me-2"></i>All Mechanics</h4>
+      </div>
+      {% for mechanic in mechanics %}
+        <div class="col-md-4 mb-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title text-success">{{ mechanic.name }}</h5>
+              <p><i class="fas fa-cog"></i> {{ mechanic.specialization }}</p>
+              <p><i class="fas fa-briefcase"></i> {{ mechanic.experience }} yrs</p>
+              <p><i class="fas fa-phone"></i> {{ mechanic.phone }}</p>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-muted">No mechanics available.</p>
+      {% endfor %}
+
+      <div class="col-12 mt-5">
+        <h4 class="fw-bold text-primary mb-3"><i class="fas fa-users me-2"></i>All Users</h4>
+      </div>
+      {% for user in users %}
+        <div class="col-md-4 mb-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title text-primary">{{ user.first_name }} {{ user.last_name }}</h5>
+              <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+              <p><i class="fas fa-phone"></i> {{ user.phone }}</p>
+              <p><i class="fas fa-map-marker-alt"></i> {{ user.address }}</p>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-muted">No users available.</p>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+</div>
+
+
+{% endblock %}

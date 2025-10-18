@@ -1,0 +1,128 @@
+{% extends "Vehicle/base.html" %}
+{% block content %}
+<style>
+    body {
+      background: #f4f8f4;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .navbar {
+      background: linear-gradient(90deg, #28a745, #1e7e34);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: white !important;
+      font-size: 1.3rem;
+    }
+
+    .dashboard-header {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-top: 30px;
+    }
+
+    .dashboard-header h4 {
+      color: #28a745;
+      font-weight: 600;
+    }
+
+    .btn-book {
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      transition: 0.3s;
+    }
+
+    .btn-book:hover {
+      background: #1e7e34;
+      transform: scale(1.05);
+    }
+
+    .card {
+      border-radius: 15px;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .status-pending { color: #ffc107; font-weight: 600; }
+    .status-confirmed { color: #28a745; font-weight: 600; }
+    .status-cancelled { color: #dc3545; font-weight: 600; }
+  </style>
+
+
+
+  <div class="container mt-5">
+    <div class="dashboard-header">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h4>Welcome, {{ user.username }} 👋</h4>
+          <p class="text-muted mb-0">
+            Email: {{ user.email }} | City: {{ user.city }}
+          </p>
+        </div>
+        <div class="col-md-4 text-end">
+          <a href="{% url 'Vehicle:index' %}" class="btn-book">
+            <i class="fas fa-calendar-plus"></i> Book New Slot
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Table -->
+<div class="card mt-4 p-3">
+  <h5 class="text-success mb-3"><i class="fas fa-history"></i> Your Booking History</h5>
+  <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle">
+      <thead class="table-success">
+        <tr>
+          <th>#</th>
+          <th>Location</th>
+          <th>Rate (₹/hr)</th>
+          <th>Date</th>
+          <th>Time Slot</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ booking.bunker.location }}</td>
+          <td>{{ booking.bunker.rate }}</td>
+          <td>{{ booking.booking_date }}</td>
+          <td>{{ booking.time_slot }} hr</td>
+          <td>
+            {% if booking.status == 'pending' %}
+              <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
+            {% elif booking.status == 'confirmed' %}
+              <span class="badge bg-primary px-3 py-2">Confirmed</span>
+            {% elif booking.status == 'cancelled' %}
+              <span class="badge bg-danger px-3 py-2">Cancelled</span>
+            {% elif booking.status == 'done' %}
+              <span class="badge bg-success px-3 py-2"><i class="fas fa-check-circle me-1"></i>Done</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-muted">No bookings yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </div>
+
+{% endblock %}
